@@ -1,63 +1,81 @@
+
 // pages/detail/detail.js
 Page({
-
 	data: {
+		goodsId:null,
+		goodsItems:null,
+
+		goodsNumber: 99,
+    mask: true,
+    cartBox: true,
+    danguige: true,
+    duoguige: false,
+	
+		guigelist: [
+      {
+        id: 1,
+        guige: '一'
+      },
+      {
+        id: 2,
+        guige: '二'
+      },
+      {
+        id: 1,
+        guige: '三'
+      }
+    ]
+
+	},
+	onLoad: async function (options) {
+		this.setData({
+			goodsId:options.id,
+		})
+		let items = await this.getItems()
+		console.log(items)
+		this.setData({
+			goodsItems:items.data[0]
+		})
+		console.log(this.data.goodsItems)
 		
 	},
-
-	/**
-	 * 生命周期函数--监听页面加载
-	 */
-	onLoad: function (options) {
-
+	getItems() {
+		return new Promise((resolve,reject) =>{
+			const db = wx.cloud.database()
+			db.collection('goodsItems').where({
+				goodsId:this.data.goodsId
+			}).get().then( (res) =>{ 
+				resolve(res)
+			})
+		})	
+	},
+	postGoodsId(){
+		wx.showToast({
+		  title: '加购成功',
+		  icon:'success',
+		  duration:1500,
+		  mask:true
+		})
+		wx.setStorageSync('goodsId', this.data.goodsId)
 	},
 
-	/**
-	 * 生命周期函数--监听页面初次渲染完成
-	 */
-	onReady: function () {
-
+	showCart() {
+		this.setData({
+			cartBox: !this.data.cartBox, 
+			mask: !this.data.mask, 
+		});
 	},
-
-	/**
-	 * 生命周期函数--监听页面显示
-	 */
-	onShow: function () {
-
-	},
-
-	/**
-	 * 生命周期函数--监听页面隐藏
-	 */
-	onHide: function () {
-
-	},
-
-	/**
-	 * 生命周期函数--监听页面卸载
-	 */
-	onUnload: function () {
-
-	},
-
-	/**
-	 * 页面相关事件处理函数--监听用户下拉动作
-	 */
-	onPullDownRefresh: function () {
-
-	},
-
-	/**
-	 * 页面上拉触底事件的处理函数
-	 */
-	onReachBottom: function () {
-
-	},
-
-	/**
-	 * 用户点击右上角分享
-	 */
-	onShareAppMessage: function () {
-
+	
+	hideAllBox() {
+		this.setData({
+			mask: true,
+			paramsBox: true,
+			cartBox: true,
+			choice: true,
+		})
 	}
+
 })
+
+
+

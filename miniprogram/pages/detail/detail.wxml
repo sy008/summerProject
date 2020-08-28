@@ -1,1 +1,96 @@
+
+<swiper class="swiper" 
+        circular="true" 
+        autoplay="true" 
+        interval="3000" 
+        duration="300" 
+        indicator-dots="true">
+  <block wx:for='{{goodsItems.goodsDetail}}' wx:key='index'>
+      <swiper-item >
+        <image src= '{{item}}' mode="width" class="imgItem"></image> 
+      </swiper-item>
+  </block> 
+</swiper>
+
+  <view class="goodsDetail">
+    <view class="name">
+      <text space="nbsp">商品名称:{{goodsItems.goodsTitle}}</text>
+    </view>
+    <view class="price">价格:{{goodsItems.goodsPrice}}</view>
+    <view class="size">销量:{{goodsItems.goodsSail}}</view>
+  </view>
+
+  <view class="showDetail">
+    <block wx:for='{{goodsItems.goodsDetail}}' wx:key='index'>
+        <image src= '{{item}}' mode="width" class="imgItem"></image> 
+    </block>
+  </view>
+
+  <view class="foot">
+    <navigator url="/pages/index/index" open-type="switchTab">
+    <button size="mini" type="primary"><text>首页</text></button></navigator>
+    <navigator url="/pages/" open-type="switchTab">
+    <button size="mini" type="primary"><text>客服</text></button></navigator>
+    <navigator url="/pages/cart/cart" open-type="switchTab">
+    <button size="mini" type="primary"><text>购物车</text></button></navigator>
+    <button size="mini" type="warn" bind:tap='postGoodsId'><text>加入</text></button> 
+    <button size="mini" type="warn" bindtap="showCart">购买</button>
+    <!--遮罩-->
+    <view class='mask' hidden='{{mask}}' catchtap='hideAllBox'></view>
+    <!--购物车弹窗-->
+    <view class='lay-box detail-cart {{!cartBox ? "on" : ""}}'>
+   <view class='box-cart-title'>
+		<image src="{{data.item_img[0][0]}}" class='box-img'></image>
+		<view class='price-box'>
+			<!--价格库存-->
+			<view class='price'>￥---</view>
+			<view class="sales">库存(99)</view>
+			<!--右上角关闭按钮-->
+			<text class='lay-close' bindtap='showCart'>×</text>
+		</view>
+	</view>
+	<scroll-view scroll-y class='box-content'>
+		<!-- 单规格选择 -->
+		<view wx:if='{{danguige}}' class='box-spec'>
+			<view class='cor-grey'>规格</view>
+			<view class='spec-items'>
+				<!--规格列表-->
+				<view class='spec-item {{specActive == item.id ? "on" : ""}}' wx:for="{{guigelist}}" wx:key="*this" data-gui_id="{{item.id}}" data-item_id="{{item.item_id}}" data-price="{{item.price}}" data-inventory="{{item.inventory}}" data-limit="{{item.limit_number}}" bindtap="OneSelectSpec">{{item.guige}}</view>
+			</view>
+		</view>
  
+ 
+		<!--多规格-多属性选择-->
+		<view wx:if='{{duoguige}}' class='box-spec' wx:for="{{data.sku_list}}" wx:key="*this" wx:for-index="boxindex">
+			<view class='cor-grey'>{{item.name}}</view>
+			<view class='spec-items'>
+				<!--属性列表-->
+				<button class='spec-item {{attr.isHasSpec ? "on" : ""}} {{attr.isCould ? "" : "grey"}}' disabled="{{!attr.isCould}}" wx:for="{{item.list}}" wx:for-item="attr" wx:key="*this" data-gui_id="{{attr.id}}" data-item_id="{{attr.sp_value_id}}" data-num="{{attr.num}}" data-index="{{boxindex}}" data-index_x="{{index}}" data-attr="{{attr}}" data-spname="{{attr.sp_value_name}}" bindtap="selectSpec">
+					商品
+				</button>
+			</view>
+		</view>
+ 
+		<!--选择数量-->
+		<view class='updown-box jus-b ali-c'>
+			<view class='cor-grey'>数量</view>
+			<!--商品数量加减按钮-->
+			<view class='updown flexc'>
+				<!--减-->
+				<view class='down' hover-class='button-hover' bindtap='reduceNumber'>
+					<text>-</text>
+				</view>
+				<!--输入框-->
+				<input type='number' class='nums' value='{{goodsNumber}}' bindinput="inputValueChange"></input>
+				<!--加-->
+				<view class='up' hover-class='button-hover' bindtap='addNumber'>
+					<text>+</text>
+				</view>
+			</view>
+		</view>
+	</scroll-view>
+	<view class='box-btn' bindtap='cartBoxClick'>确定</view>
+</view>
+  </view>
+
+
